@@ -23,9 +23,9 @@ myjump_compress() {
 
 myjump() {
 	param="$@"
-	for each_pwd in $NEW_DATA; do
-		if [[ $each_pwd =~ ^.*${param// /.*}.*$ ]]; then
-			cd $each_pwd
+	for ((idx=${#NEW_DATA}-1;idx>0;idx--)); do
+		if [[ $NEW_DATA[idx] =~ ^.*${param// /.*}.*$ ]]; then
+			cd $NEW_DATA[idx]
 			return
 		fi
 	done
