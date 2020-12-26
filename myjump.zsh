@@ -30,7 +30,6 @@ myjump() {
 		fi
 	done
 	for ((idx=${#MYJUMP_DATA}-1;idx>0;idx--)); do
-		echo $MYJUMP_DATA[idx]
 		if [[ $MYJUMP_DATA[idx] =~ ^.*${param// /.*}.*$ ]]; then
 			cd $MYJUMP_DATA[idx]
 			return
