@@ -6,10 +6,13 @@ myjump_exit() {
 }
 
 myjump_precmd() {
-	if [ $#PWD -ge 512 ]; then
+	if [ "$PWD" = "$HOME" ]; then
 		return
 	fi
 	if [ "$PWD" = "$LASTPWD" ]; then
+		return
+	fi
+	if [ $#PWD -ge 512 ]; then
 		return
 	fi
 	NEW_DATA+=("$(printf "%q" $PWD)")
@@ -18,7 +21,7 @@ myjump_precmd() {
 
 myjump_compress() {
 	set -e
-	awk '!seen[$0]++' $MYJUMP_FILE | sponge $MYJUMP_FILE
+	tac $MYJUMP_FILE | awk '!seen[$0]++' | tac | sponge $MYJUMP_FILE
 }
 
 myjump() {
