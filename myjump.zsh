@@ -35,6 +35,7 @@ myjump_lnx() {
 }
 
 myjump() {
+	setopt nocasematch
 	setopt local_options BASH_REMATCH
 	param="$@"
 	for ((idx=${#NEW_DATA};idx>0;idx--)); do
