@@ -1,6 +1,7 @@
 source ${0:A:h}/myjump.zsh
-mkdir -p $HOME/.local/share/myjump
-MYJUMP_FILE=$HOME/.local/share/myjump/data
+mkdir -p "$XDG_DATA_HOME"/myjump
+MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
+touch "$MYJUMP_FILE"
 while read -r line; do
 	MYJUMP_DATA+=($line)
 done <$MYJUMP_FILE
