@@ -26,13 +26,13 @@ myjump_compress() {
 
 myjump() {
 	param="$@"
-	for ((idx=${#NEW_DATA}-1;idx>0;idx--)); do
+	for ((idx=${#NEW_DATA};idx>0;idx--)); do
 		if [[ $NEW_DATA[idx] =~ ^.*${param// /.*}.*$ ]]; then
 			cd $NEW_DATA[idx]
 			return
 		fi
 	done
-	for ((idx=${#MYJUMP_DATA}-1;idx>0;idx--)); do
+	for ((idx=${#MYJUMP_DATA};idx>0;idx--)); do
 		if [[ $MYJUMP_DATA[idx] =~ ^.*${param// /.*}.*$ ]]; then
 			cd $MYJUMP_DATA[idx]
 			return
