@@ -29,14 +29,18 @@ myjump() {
 	param="$@"
 	for ((idx=${#NEW_DATA};idx>0;idx--)); do
 		if [[ $NEW_DATA[idx] =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
-			cd "${BASH_REMATCH[2]}"
-			return
+			if [ -d "${BASH_REMATCH[2]}" ]; then
+				cd "${BASH_REMATCH[2]}"
+				return
+			fi
 		fi
 	done
 	for ((idx=${#MYJUMP_DATA};idx>0;idx--)); do
 		if [[ $MYJUMP_DATA[idx] =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
-			cd "${BASH_REMATCH[2]}"
-			return
+			if [ -d "${BASH_REMATCH[2]}" ]; then
+				cd "${BASH_REMATCH[2]}"
+				return
+			fi
 		fi
 	done
 	return 1
