@@ -25,16 +25,17 @@ myjump_compress() {
 }
 
 myjump() {
+	setopt local_options BASH_REMATCH
 	param="$@"
 	for ((idx=${#NEW_DATA};idx>0;idx--)); do
-		if [[ $NEW_DATA[idx] =~ ^.*${param// /.*}.*$ ]]; then
-			cd $NEW_DATA[idx]
+		if [[ $NEW_DATA[idx] =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
+			cd "${BASH_REMATCH[2]}"
 			return
 		fi
 	done
 	for ((idx=${#MYJUMP_DATA};idx>0;idx--)); do
-		if [[ $MYJUMP_DATA[idx] =~ ^.*${param// /.*}.*$ ]]; then
-			cd $MYJUMP_DATA[idx]
+		if [[ $MYJUMP_DATA[idx] =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
+			cd "${BASH_REMATCH[2]}"
 			return
 		fi
 	done
