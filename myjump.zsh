@@ -1,13 +1,18 @@
 trap myjump_exit EXIT
 
-myjump_init() {
-	autoload -U add-zsh-hook
+myjump_load() {
 	mkdir -p "$XDG_DATA_HOME"/myjump
 	MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
 	touch "$MYJUMP_FILE"
+	unset MYJUMP_DATA
 	while read -r line; do
 		MYJUMP_DATA+=($line)
 	done <$MYJUMP_FILE
+}
+
+myjump_init() {
+	autoload -U add-zsh-hook
+	myjump_load
 	add-zsh-hook precmd myjump_precmd
 	zle -N myjump_precmd
 }
@@ -37,14 +42,32 @@ myjump_compress() {
 	tac "$MYJUMP_FILE" | awk '!seen[$0]++' | tac | sponge "$MYJUMP_FILE"
 }
 
-# list nonexist
-myjump_lnx() {
-	set -e
-	cat "$MYJUMP_FILE" | while read -r line; do
+# manual clean nonexist
+myjump_cnx() {
+	local cnt=0
+	local yn
+	if [ -f "$MYJUMP_FILE.tmp" ]; then
+		echo "rm \"$MYJUMP_FILE.tmp\""
+		return 1
+	fi
+	myjump_load # reload to update data
+	for line in $MYJUMP_DATA; do
+		local PRESERVE_FLAG=true
+		cnt=$((cnt + 1))
+		echo -n "\r$cnt"
 		if [ ! -d "$(printf '%b' "$line")" ]; then
-			echo $line
+			echo -n ":$line not exist, delete?(yN)"
+			read -r yn
+			if [ "$yn" = "y" ]; then
+				PRESERVE_FLAG=false
+			fi
+			RESULT+="$line\n"
+		fi
+		if $PRESERVE_FLAG; then
+			echo "${"${line//\\/\\\\}"//$'\n'/\\n}" >> "$MYJUMP_FILE.tmp"
 		fi
 	done
+	mv "$MYJUMP_FILE.tmp" "$MYJUMP_FILE"
 }
 
 myjump() {
