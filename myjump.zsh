@@ -1,4 +1,17 @@
 trap myjump_exit EXIT
+
+myjump_init() {
+	autoload -U add-zsh-hook
+	mkdir -p "$XDG_DATA_HOME"/myjump
+	MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
+	touch "$MYJUMP_FILE"
+	while read -r line; do
+		MYJUMP_DATA+=($line)
+	done <$MYJUMP_FILE
+	add-zsh-hook precmd myjump_precmd
+	zle -N myjump_precmd
+}
+
 myjump_exit() {
 	for each_pwd in $NEW_DATA; do
 		echo "$each_pwd" >> "$MYJUMP_FILE"
