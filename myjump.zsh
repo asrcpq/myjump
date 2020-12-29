@@ -76,19 +76,15 @@ myjump() {
 	param="$@"
 	for ((idx=${#NEW_DATA};idx>0;idx--)); do
 		if [[ "$NEW_DATA[idx]" =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
-			if [ -d "${BASH_REMATCH[2]}" ]; then
-				cd "${BASH_REMATCH[2]}"
-				return
-			fi
+			cd "${BASH_REMATCH[2]}"
+			return
 		fi
 	done
 	for ((idx=${#MYJUMP_DATA};idx>0;idx--)); do
 		if [[ "$MYJUMP_DATA[idx]" =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
 			local unescaped="$(printf "%b" ${BASH_REMATCH[2]})"
-			if [ -d "${unescaped}" ]; then
-				cd "${unescaped}"
-				return
-			fi
+			cd "${unescaped}"
+			return
 		fi
 	done
 	return 1
