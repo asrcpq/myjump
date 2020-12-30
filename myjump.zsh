@@ -1,5 +1,3 @@
-trap myjump_exit EXIT
-
 myjump_load() {
 	mkdir -p "$XDG_DATA_HOME"/myjump
 	MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
