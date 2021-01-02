@@ -37,7 +37,9 @@ myjump_precmd() {
 
 myjump_compress() {
 	set -e
-	tac "$MYJUMP_FILE" | awk '!seen[$0]++' | tac | sponge "$MYJUMP_FILE"
+	[ -f "$MYJUMP_FILE.tmp" ] && return 1
+	tac "$MYJUMP_FILE" | awk '!seen[$0]++' | tac > "$MYJUMP_FILE.tmp"
+	mv "$MYJUMP_FILE.tmp" "$MYJUMP_FILE"
 }
 
 # manual clean nonexist
