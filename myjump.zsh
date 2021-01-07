@@ -36,7 +36,6 @@ myjump_precmd() {
 }
 
 myjump_compress() {
-	set -e
 	[ -f "$MYJUMP_FILE.tmp" ] && return 1
 	tac "$MYJUMP_FILE" | awk '!seen[$0]++' | tac > "$MYJUMP_FILE.tmp"
 	mv "$MYJUMP_FILE.tmp" "$MYJUMP_FILE"
@@ -52,19 +51,12 @@ myjump_cnx() {
 	fi
 	myjump_load # reload to update data
 	for line in $MYJUMP_DATA; do
-		local PRESERVE_FLAG=true
 		cnt=$((cnt + 1))
 		echo -n "\r$cnt"
-		if [ ! -d "$(printf '%b' "$line")" ]; then
-			echo -n ":$line not exist, delete?(yN)"
-			read -r yn
-			if [ "$yn" = "y" ]; then
-				PRESERVE_FLAG=false
-			fi
-			RESULT+="$line\n"
-		fi
-		if $PRESERVE_FLAG; then
+		if [ -d "$(printf '%b' "$line")" ] || [[ "$line" == "$HOME/mnt"* ]]; then
 			echo "${"${line//\\/\\\\}"//$'\n'/\\n}" >> "$MYJUMP_FILE.tmp"
+		else
+			echo "$line"
 		fi
 	done
 	mv "$MYJUMP_FILE.tmp" "$MYJUMP_FILE"
