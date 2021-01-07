@@ -1,27 +1,27 @@
-myjump_load() {
+_myjump_load() {
 	mkdir -p "$XDG_DATA_HOME"/myjump
-	MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
-	touch "$MYJUMP_FILE"
-	unset MYJUMP_DATA
+	_MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
+	touch "$_MYJUMP_FILE"
+	unset _MYJUMP_DATA
 	while read -r line; do
-		MYJUMP_DATA+=($line)
-	done <$MYJUMP_FILE
+		_MYJUMP_DATA+=($line)
+	done <$_MYJUMP_FILE
 }
 
-myjump_init() {
+_myjump_init() {
 	autoload -U add-zsh-hook
-	myjump_load
-	add-zsh-hook precmd myjump_precmd
-	zle -N myjump_precmd
+	_myjump_load
+	add-zsh-hook precmd _myjump_precmd
+	zle -N _myjump_precmd
 }
 
-myjump_exit() {
+_myjump_exit() {
 	for each_pwd in $NEW_DATA; do
-		echo "$each_pwd" >> "$MYJUMP_FILE"
+		echo "$each_pwd" >> "$_MYJUMP_FILE"
 	done
 }
 
-myjump_precmd() {
+_myjump_precmd() {
 	if [ "$PWD" = "$HOME" ]; then
 		return
 	fi
@@ -36,30 +36,31 @@ myjump_precmd() {
 }
 
 myjump_compress() {
-	[ -f "$MYJUMP_FILE.tmp" ] && return 1
-	tac "$MYJUMP_FILE" | awk '!seen[$0]++' | tac > "$MYJUMP_FILE.tmp"
-	mv "$MYJUMP_FILE.tmp" "$MYJUMP_FILE"
+	[ -f "$_MYJUMP_FILE.tmp" ] && return 1
+	tac "$_MYJUMP_FILE" | awk '!seen[$0]++' | tac > "$_MYJUMP_FILE.tmp"
+	wc -l <"$_MYJUMP_FILE" | tr -d '\n'
+	echo -n " -> "
+	wc -l <"$_MYJUMP_FILE.tmp"
+	mv "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
+	rm -f "$_MYJUMP_FILE.tmp"
 }
 
 # manual clean nonexist
 myjump_cnx() {
 	local cnt=0
 	local yn
-	if [ -f "$MYJUMP_FILE.tmp" ]; then
-		echo "rm \"$MYJUMP_FILE.tmp\""
-		return 1
-	fi
-	myjump_load # reload to update data
-	for line in $MYJUMP_DATA; do
+	_myjump_load # reload to update data
+	for line in $_MYJUMP_DATA; do
 		cnt=$((cnt + 1))
 		echo -n "\r$cnt"
 		if [ -d "$(printf '%b' "$line")" ] || [[ "$line" == "$HOME/mnt"* ]]; then
-			echo "${"${line//\\/\\\\}"//$'\n'/\\n}" >> "$MYJUMP_FILE.tmp"
+			echo "${"${line//\\/\\\\}"//$'\n'/\\n}" >> "$_MYJUMP_FILE.tmp"
 		else
 			echo "$line"
 		fi
 	done
-	mv "$MYJUMP_FILE.tmp" "$MYJUMP_FILE"
+	mv "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
+	rm -f "$_MYJUMP_FILE.tmp"
 }
 
 myjump() {
@@ -73,7 +74,7 @@ myjump() {
 		fi
 	done
 	for ((idx=${#MYJUMP_DATA};idx>0;idx--)); do
-		if [[ "$MYJUMP_DATA[idx]" =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
+		if [[ "$_MYJUMP_DATA[idx]" =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
 			local unescaped="$(printf "%b" ${BASH_REMATCH[2]})"
 			cd "${unescaped}"
 			return
