@@ -42,7 +42,7 @@ myjump_compress() {
 	echo -n " -> "
 	wc -l <"$_MYJUMP_FILE.tmp"
 	mv "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
-	rm -f "$_MYJUMP_FILE.tmp"
+	[ -f "$_MYJUMP_FILE.tmp" ] && rm "$_MYJUMP_FILE.tmp"
 }
 
 # manual clean nonexist
@@ -60,7 +60,7 @@ myjump_cnx() {
 		fi
 	done
 	mv "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
-	rm -f "$_MYJUMP_FILE.tmp"
+	[ -f "$_MYJUMP_FILE.tmp" ] && rm "$_MYJUMP_FILE.tmp"
 }
 
 myjump() {
