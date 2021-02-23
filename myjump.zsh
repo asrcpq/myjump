@@ -16,7 +16,7 @@ _myjump_init() {
 }
 
 _myjump_exit() {
-	for each_pwd in $NEW_DATA; do
+	for each_pwd in $_MYJUMP_NEW_DATA; do
 		echo "$each_pwd" >> "$_MYJUMP_FILE"
 	done
 }
@@ -31,7 +31,7 @@ _myjump_precmd() {
 	if [ ${#PWD} -ge 512 ]; then
 		return
 	fi
-	NEW_DATA+=("${"${PWD//\\/\\\\}"//$'\n'/\\\\n}")
+	_MYJUMP_NEW_DATA+=("${"${PWD//\\/\\\\}"//$'\n'/\\\\n}")
 	LASTPWD="$PWD"
 }
 
@@ -48,7 +48,6 @@ myjump_compress() {
 # manual clean nonexist
 myjump_cnx() {
 	local cnt=0
-	local yn
 	_myjump_load # reload to update data
 	for line in $_MYJUMP_DATA; do
 		cnt=$((cnt + 1))
@@ -67,8 +66,8 @@ myjump() {
 	setopt nocasematch
 	setopt local_options BASH_REMATCH
 	param="$@"
-	for ((idx=${#NEW_DATA};idx>0;idx--)); do
-		if [[ "$NEW_DATA[idx]" =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
+	for ((idx=${#_MYJUMP_NEW_DATA};idx>0;idx--)); do
+		if [[ "$_MYJUMP_NEW_DATA[idx]" =~ ^(.*${param// /.*}[^/]*).*$ ]]; then
 			if [ -d "${BASH_REMATCH[2]}" ]; then
 				cd "${BASH_REMATCH[2]}"
 				return
