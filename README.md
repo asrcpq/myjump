@@ -11,3 +11,5 @@ features:
 * does not compress existing paths automatically(use myjump\_compress)
 
 * does not delete nonexistent paths automatically(use myjump\_cnx)
+
+* jump to the highest possible folder that match the search string
