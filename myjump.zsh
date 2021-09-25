@@ -52,14 +52,15 @@ myjump_cnx() {
 	for line in $_MYJUMP_DATA; do
 		cnt=$((cnt + 1))
 		echo -n "\r$cnt"
-		if [ -d "$(printf '%b' "$line")" ] || [[ "$line" == "$HOME/mnt"* ]]; then
+		if [ -n "$1" ] && [[ "$line" =~ $1 ]] || [ -d "$(printf '%b' "$line")" ]; then
 			echo "${"${line//\\/\\\\}"//$'\n'/\\n}" >> "$_MYJUMP_FILE.tmp"
 		else
 			echo "$line"
 		fi
 	done
+
 	mv "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
-	[ -f "$_MYJUMP_FILE.tmp" ] && rm "$_MYJUMP_FILE.tmp"
+	rm -f "$_MYJUMP_FILE.tmp"
 }
 
 myjump() {
