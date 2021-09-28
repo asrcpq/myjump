@@ -41,8 +41,7 @@ myjump_compress() {
 	wc -l <"$_MYJUMP_FILE" | tr -d '\n'
 	echo -n " -> "
 	wc -l <"$_MYJUMP_FILE.tmp"
-	mv "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
-	[ -f "$_MYJUMP_FILE.tmp" ] && rm "$_MYJUMP_FILE.tmp"
+	mv -f "$_MYJUMP_FILE.tmp" "$_MYJUMP_FILE"
 }
 
 # manual clean nonexist
