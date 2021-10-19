@@ -1,5 +1,7 @@
 _myjump_load() {
-	mkdir -p "$XDG_DATA_HOME"/myjump
+	if ! [ -d "$XDG_DATA_HOME/myjump" ]; then
+		mkdir -p "$XDG_DATA_HOME/myjump"
+	fi
 	_MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
 	touch "$_MYJUMP_FILE"
 	unset _MYJUMP_DATA
