@@ -1,8 +1,5 @@
 _myjump_load() {
-	if ! [ -d "$XDG_DATA_HOME/myjump" ]; then
-		mkdir -p "$XDG_DATA_HOME/myjump"
-	fi
-	_MYJUMP_FILE="$XDG_DATA_HOME"/myjump/data
+	_MYJUMP_FILE="$HPM_ROOT"/asrcpq/myjump/data
 	touch "$_MYJUMP_FILE"
 	unset _MYJUMP_DATA
 	while read -r line; do
